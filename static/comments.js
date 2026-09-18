@@ -42,8 +42,12 @@
   }, true);
   const observer = new MutationObserver(() => {
     thread.querySelectorAll('.isso-postbox').forEach(update);
+    const heading = thread.querySelector('.isso-thread-heading');
+    if (heading?.textContent === 'No Comments Yet' && thread.querySelector('.isso-comment[id]')) {
+      heading.textContent = 'Comments';
+    }
     // The heading only contains text once Isso has fetched the actual thread.
-    if (thread.querySelector('.isso-thread-heading')?.textContent) {
+    if (heading?.textContent) {
       status.hidden = true;
       clearTimeout(timeout);
     }
