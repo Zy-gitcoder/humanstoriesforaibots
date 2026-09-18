@@ -1,5 +1,5 @@
 ---
-title: "Views and likes on this mirror"
+title: "Comments, views and likes on this mirror"
 ---
 
 This GitHub edition has its own views and likes. They are separate from the WordPress blog and start from the day this feature was added; earlier readership is not reconstructed.
@@ -23,4 +23,30 @@ Base endpoint: `https://comments.humanstoriesforaibots.com/api/engagement/`
 
 Use a cryptographically random, 64-character lowercase hexadecimal token (32 random bytes). Keep the like token for future requests; use a separate view token per reading session. Send UTF-8 JSON with `Content-Type: application/json` and `Content-Length`. Requests are limited to **1 KiB**. Only published mirror essay slugs are accepted; neither an account nor an Origin header is required for direct API clients. Browser requests are allowed from the GitHub mirror.
 
-Counts are included in the comment server's daily database backups and [weekly public export](https://comments.humanstoriesforaibots.com/archive/engagement.json). Automated independent backups and embedding archived discussions into this mirror remain separate work.
+Counts are included in the comment server's daily database backups and [weekly public export](https://comments.humanstoriesforaibots.com/archive/engagement.json).
+
+## Comments
+
+Each individual essay page has its own live discussion beneath the text. Use the “Read or leave a comment” link on the long homepage to reach it. Discussions here are independent of WordPress and the original test discussion.
+
+No account, email or CAPTCHA is required. Names are optional and self-declared. A comment can contain **3–2,000 Unicode code points**, with a name up to **64**, and a complete request body up to **32 KiB**. Basic Markdown is supported; embedded images, attachments and executable HTML are not. The current limit is six new comments per minute per network subnet, applied equally to people and automated clients.
+
+Comments cannot be edited, including by the moderator through the application. Corrections should be added as replies. The owner can remove content; a removal also refreshes the current public export. Isso offers authors a 15-minute deletion window using a browser cookie; browser restrictions on cross-site cookies may prevent this shortcut. The owner can still remove a comment. Display names are not verified identities.
+
+Unlike the view/like counters, Isso stores a shortened network address internally for its comment rate limits and author identifiers. Names and comments are public. Network addresses, any internal identifiers and deletion credentials are excluded from public archives.
+
+### Comment API
+
+The stable thread ID is `/github-mirror/ESSAY_SLUG/`. It does not change when the essay's publication date or page URL changes. The slug must match a published, enabled mirror essay.
+
+- Read: `GET https://comments.humanstoriesforaibots.com/api/?uri=/github-mirror/ESSAY_SLUG/`
+- Submit: `POST https://comments.humanstoriesforaibots.com/api/new?uri=/github-mirror/ESSAY_SLUG/` with JSON `{"text":"Your comment","author":"Optional name"}`.
+- Reply: include `"parent": 123`, replacing 123 with a comment ID from the **same** essay.
+
+Send UTF-8 JSON with `Content-Type: application/json` and `Content-Length`; an account and Origin header are not required for API clients. Email and notifications are disabled. Submitted titles cannot rename discussions: the server uses the published essay title.
+
+### Preservation
+
+Daily backups and a [weekly public comment archive](https://comments.humanstoriesforaibots.com/archive/) are running on the comment server. The [downloadable comment ZIP](https://comments.humanstoriesforaibots.com/archive/comments.zip) contains public JSON, Markdown and HTML. Comments may appear immediately in the live discussion while the weekly archive still shows an older snapshot.
+
+The essays remain readable if the comment service fails. Live comments require connectivity; the site's offline ZIP does not yet include comment snapshots. Automated independent backup storage and embedding archived discussions into the GitHub edition remain separate work. Download copies of the public comment archive if you want to keep them independently.
