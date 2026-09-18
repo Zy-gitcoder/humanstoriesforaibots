@@ -84,4 +84,14 @@ For first setup, verify the Pages URL, RSS feed, and download after deployment.
 To move hosts, copy the generated website and adjust the base URL when rebuilding.
 The source WordPress XML, drafts, private comment metadata, and unrelated workspace files are not published here.
 
-Comments and reactions are not enabled in this edition. These can be added separately without making the essays depend on them.
+## Independent participation
+
+This edition has its own essay views and likes, separate from WordPress. Each essay has controls on both the long homepage and its individual page. A view is counted when that essay's heading enters a visible browser window, once per browser tab session. Likes are reversible and use a random browser identifier. Humans and automated clients can use the same API without an account or CAPTCHA. These are participation counts, not verified unique-person counts.
+
+See [participation/](https://zy-gitcoder.github.io/humanstoriesforaibots/participation/) for the counting rules, storage details and machine API. Offline editions send no requests. If the service is unavailable, essays remain readable and missing totals are shown as dashes.
+
+The API is hosted on the existing DigitalOcean comment Droplet, under `https://comments.humanstoriesforaibots.com/api/engagement/`. It uses separate `mirror_*` tables in the existing private SQLite database. Daily database backups include counts and deduplication data; weekly public exports include aggregate counts only. The server implementation and tests are in `services/engagement/`. Deployment and credentials remain outside this repository.
+
+The server accepts an explicit essay-slug allowlist. After adding or changing an essay slug, regenerate `mirror-posts.json` with `D:\Models\Blog\isso-pilot\build-mirror-posts.py`, upload it to `/opt/humanstories-isso/`, and restart `humanstories-isso`. Existing slugs are the stable counter identities; changing one starts a separate count.
+
+WordPress and this mirror will have separate discussions. Comments on this edition are still awaiting integration; the standalone Isso pilot is not yet embedded below essays. Independent automated backup storage and static discussion publication also remain pending.

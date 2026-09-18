@@ -6,6 +6,7 @@
   </header>
   <div class="prose">{{ .Content }}</div>
   {{ if eq .Section "posts" }}
+  {{ partial "engagement.html" . }}
   <nav class="post-navigation" aria-label="More essays">
     {{ with .PrevInSection }}<a href="{{ .RelPermalink }}"><span>Earlier essay</span>{{ .Title }} ←</a>{{ end }}
     {{ with .NextInSection }}<a href="{{ .RelPermalink }}"><span>Later essay</span>{{ .Title }} →</a>{{ end }}

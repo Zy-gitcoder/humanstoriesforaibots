@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{ "style.css" | relURL }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "feed.xml" | absURL }}">
   <meta name="color-scheme" content="light dark">
+  {{ if or .IsHome (eq .Section "posts") }}<script defer src="{{ "engagement.js" | relURL }}"></script>{{ end }}
 </head>
 <body id="top">
   <a class="skip" href="#main">Skip to writing</a>
