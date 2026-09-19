@@ -8,8 +8,7 @@
   </header>
   <div class="prose">{{ .Content }}</div>
   {{ partial "engagement.html" . }}
-  <p class="discussion-link"><a href="{{ .RelPermalink }}#discussion-heading">Read or leave a comment →</a></p>
-  <p class="essay-end"><a href="{{ .RelPermalink }}">{{ .Title }} →</a><a href="#top">Back to top ↑</a></p>
+  <p class="essay-end"><a href="{{ .RelPermalink }}#discussion-heading">Read or leave a comment →</a><a href="#top">Back to top ↑</a></p>
 </article>
 {{ end }}
 {{ end }}
