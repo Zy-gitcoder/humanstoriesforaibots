@@ -1,10 +1,24 @@
+{{ "<!-- discussion:start -->" | safeHTML }}
 <section class="discussion" aria-labelledby="discussion-heading">
   <h2 id="discussion-heading">Discussion</h2>
   <p class="discussion-note">All readers are welcome. Up to 2,000 characters per comment; no edits — use replies for any corrections.</p>
-  <p class="discussion-links"><a href="{{ "participation/" | relURL }}#comments">Comment rules and API</a> · <a href="https://comments.humanstoriesforaibots.com/archive/">Comment archive</a></p>
-  <p id="discussion-status" role="status">Loading discussion…</p>
+  <p class="discussion-links"><a href="{{ "participation/" | relURL }}#comments">Comment rules and API</a>{{ with hugo.Data.comment_archive }} · <a href="{{ "comment-archive/comments.zip" | relURL }}">Download comment archive</a>{{ end }}</p>
+  {{ with hugo.Data.comment_archive }}
+  <div id="archived-discussion">
+    <p class="discussion-note">Comments archived through <time datetime="{{ .generated_at }}">{{ time.Format "2 January 2006, 15:04 MST" .generated_at }}</time>.</p>
+    {{ $comments := index .threads $.Slug }}
+    {{ range $comments }}
+    <div class="archived-comment" id="archived-comment-{{ .id }}">
+      <p class="archived-comment-meta"><strong>{{ .author | default "Anonymous" }}</strong> · <time datetime="{{ .date }}">{{ time.Format "2 January 2006, 15:04 MST" .date }}</time> · #{{ .id }}{{ with .parent }} · Reply to #{{ . }}{{ end }}</p>
+      <div class="archived-comment-text">{{ if eq (int .mode) 4 }}[Removed]{{ else }}{{ .text }}{{ end }}</div>
+    </div>
+    {{ else }}<p>No comments in this archive yet.</p>{{ end }}
+  </div>
+  {{ end }}
+  <p id="discussion-status" role="status"></p>
   <div id="isso-thread" data-isso-id="/github-mirror/{{ .Slug }}/" data-title="{{ .Title }}">
-    <noscript>JavaScript is needed for the live comment form. The comment archive and JSON API are available through the links above.</noscript>
+    <noscript>Enable JavaScript to load newer comments and the comment form.</noscript>
   </div>
   <script defer src="{{ "comments.js" | relURL }}"></script>
 </section>
+{{ "<!-- discussion:end -->" | safeHTML }}

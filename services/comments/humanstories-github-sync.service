@@ -1,0 +1,17 @@
+[Unit]
+Description=Copy exported comments to GitHub and verify publication
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/humanstories-github-sync.token
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/humanstories-isso/sync_github.py
+WorkingDirectory=/opt/humanstories-isso
+TimeoutStartSec=180
+UMask=0077
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/humanstories-github-sync /var/lib/isso-public /var/lib/isso
+

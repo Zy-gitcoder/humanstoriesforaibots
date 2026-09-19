@@ -2,3 +2,6 @@
 /resources/
 /.hugo_build.lock
 /.cache/
+/data/comment_archive.json
+/static/comment-archive/
+**/__pycache__/

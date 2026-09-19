@@ -23,6 +23,8 @@ Counts are included in the comment server's daily database backups and [weekly p
 
 Each individual essay page has its own live discussion beneath the text. Use the “Read or leave a comment” link on the long homepage to reach it. Discussions here are independent of WordPress.
 
+Archived comments remain readable when the live discussion is unavailable. The [separate comment download](https://zy-gitcoder.github.io/humanstoriesforaibots/comment-archive/comments.zip) is updated weekly; comments are not included in the essay download.
+
 ### Comment API
 
 The stable thread ID is `/github-mirror/ESSAY_SLUG/`. It does not change when the essay's publication date or page URL changes. The slug must match a published, enabled mirror essay.

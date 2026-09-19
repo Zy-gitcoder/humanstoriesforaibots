@@ -2,12 +2,17 @@
 (() => {
   const thread = document.querySelector('#isso-thread');
   const status = document.querySelector('#discussion-status');
+  const archived = document.querySelector('#archived-discussion');
   if (!thread || !status) return;
   if (location.protocol !== 'https:' || location.hostname !== 'zy-gitcoder.github.io') {
     status.textContent = 'Live comments are available on the online GitHub mirror.';
     return;
   }
   const endpoint = 'https://comments.humanstoriesforaibots.com/api/';
+  status.textContent = 'Loading live discussion…';
+  // Keep the static snapshot readable until the actual discussion has loaded.
+  // The widget must stay in the layout while loading, but must not duplicate it.
+  thread.classList.add('discussion-loading');
   function update(box) {
     const text = box.querySelector('textarea');
     const name = box.querySelector('input[name="author"]');
@@ -48,13 +53,15 @@
     }
     // The heading only contains text once Isso has fetched the actual thread.
     if (heading?.textContent) {
+      if (archived) archived.hidden = true;
+      thread.classList.remove('discussion-loading');
       status.hidden = true;
       clearTimeout(timeout);
     }
   });
   observer.observe(thread, {childList:true, subtree:true});
   const timeout = setTimeout(() => {
-    status.textContent = 'The discussion could not load. Please reload to retry, or use the comment archive above.';
+    status.textContent = archived ? 'Showing archived comments. Live discussion is unavailable; reload to retry.' : 'The discussion could not load. Please reload to retry.';
   }, 15000);
   const script = document.createElement('script');
   script.src = endpoint + 'js/embed.min.js';
@@ -66,7 +73,7 @@
   script.setAttribute('data-isso-max-comments-nested', '5');
   script.onerror = () => {
     clearTimeout(timeout);
-    status.textContent = 'The discussion is temporarily unavailable. Please reload to retry, or use the comment archive above.';
+    status.textContent = archived ? 'Showing archived comments. Live discussion is unavailable; reload to retry.' : 'The discussion is temporarily unavailable. Please reload to retry.';
   };
   document.body.append(script);
 })();

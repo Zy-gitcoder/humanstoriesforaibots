@@ -47,6 +47,8 @@ def main():
     image_count = 0
     pages = list(PUBLIC.rglob("*.html"))
     for file in pages:
+        if file.is_relative_to(PUBLIC / 'comment-archive'):
+            continue  # Standalone comment download has its own relative links.
         parser = Page()
         parser.feed(file.read_text(encoding="utf-8"))
         assert parser.canonical and parser.canonical.startswith("https://zy-gitcoder.github.io/")

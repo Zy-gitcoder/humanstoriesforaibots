@@ -66,7 +66,7 @@ GitHub Actions builds, checks, packages, and publishes the site automatically.
 Repository Settings → Pages must use **GitHub Actions** as its source. Leave the custom domain empty.
 
 To preview locally, install Hugo 0.165.0 and run `hugo server`.
-To build a release, run `hugo --environment production`, `python scripts/check_site.py`,
+To build a release, run `python scripts/sync_comments.py prepare`, `hugo --environment production`, `python scripts/check_site.py`,
 and `python scripts/package_archive.py`. The `public/` directory is the complete deployable website.
 The last published HTML does not require Hugo or Python to remain readable.
 
@@ -102,4 +102,18 @@ The site loads the pinned server's Isso widget only on live HTTPS GitHub Pages. 
 
 The same slug allowlist used by engagement enables discussion creation; remember to update it on the server when publishing new essays. The server supplies canonical essay titles and rejects replies whose parent belongs to another essay. Deployment source and integration tests are preserved under `services/comments/`; the running deployment flattens those files alongside `services/engagement/engagement.py` in `/opt/humanstories-isso/`. Tests need the pinned Isso environment and should run from the comments source directory with the engagement directory on `PYTHONPATH`.
 
-The [comment archive](https://comments.humanstoriesforaibots.com/archive/) contains weekly public JSON, Markdown, HTML and a ZIP, with each comment's essay title and stable discussion ID. Removals refresh this export immediately. Daily private database backups include comments and counters. Automated independent backup storage and publishing static discussion snapshots into GitHub/the main offline ZIP remain pending; the current live comment service is not an independent disaster-recovery copy.
+The [separate comment archive](https://zy-gitcoder.github.io/humanstoriesforaibots/comment-archive/) contains public JSON, HTML and per-essay Markdown in its own ZIP. Each essay page initially displays its static discussion snapshot, then shows the complete live Isso discussion when it loads successfully. Archived comments remain visible without JavaScript or when the live service fails. The display preserves comment IDs and labels reply parents; comment text is escaped literal text. Twenty top-level live comments and five replies initially load, with pagination for the rest.
+
+Essay Markdown is never rewritten with comments. `scripts/package_archive.py` removes the discussion section and comment archive files from the essay ZIP. Comments have their own downloadable ZIP. No public comment text is committed to Git history; generated `data/comment_archive.json` and `static/comment-archive/` are ignored.
+
+### Archive publishing and recovery
+
+The server's existing timer exports weekly on Monday at 04:00 Singapore time, and removals refresh that export immediately. `services/comments/sync_github.py` checks once a minute for a new export, dispatches this repository's `pages.yml` workflow, and verifies the published snapshot date on Pages. Unfinished publication is retried after 20 minutes. The dispatcher uses a dedicated fine-grained token with **Actions: read and write** for this repository only; it cannot push essay changes. Keep it root-only at `/etc/humanstories-github-sync.token`, outside the source tree. Revoke it in GitHub settings if the Droplet is retired. A token with an expiry must be renewed before that date.
+
+The build validates the public export, excludes `/pilot/`, keeps an explicit public-field allowlist, preserves earlier removals, and rejects ID reuse, edits or unexplained missing comments. A failed ordinary fetch/build uses the last validated GitHub release snapshot; a server-requested sync requires a fresh valid export. It never treats a failed fetch as an empty discussion. Archive size is capped at 16 MiB per JSON response; reaching it stops synchronization for review.
+
+GitHub stores the latest JSON and ZIP as **replaceable assets** on the `comment-archive` release. This release must remain mutable: do not enable immutable releases for it. The build uploads both replacements before deleting older managed assets. Interrupted replacements leave staged `comments-next-*` JSON recoverable by the next build. GitHub Actions needs `contents: write` only in the build job to maintain these assets; Pages deployment uses its existing permissions. Repository activity is not required to keep the server timer running.
+
+Removals reach the server export immediately and GitHub after a successful rebuild (normally minutes, longer if GitHub is unavailable). Older public managed release assets are removed during replacement. After deployment, the workflow also deletes its Pages build artifacts so those do not retain old comment text; the deploy job has `actions: write` for this cleanup. Artifacts have a one-day expiry as a fallback if cleanup fails. Copies already downloaded, cached or independently archived cannot be recalled. Do not restore an old snapshot without the latest removal ledger.
+
+The latest published static discussion survives loss of the Droplet. Weekly copying can leave up to a week's newer comments absent from GitHub. Daily private database backups still live on the Droplet; **independent private database backup storage remains unconfigured**. Public archives preserve discussions but do not replace a full service backup.

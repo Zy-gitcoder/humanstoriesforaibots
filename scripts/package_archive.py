@@ -17,8 +17,12 @@ def main():
             if not file.is_file() or file == archive:
                 continue
             rel = file.relative_to(PUBLIC).as_posix()
+            if rel.startswith('comment-archive/'):
+                continue  # Discussion downloads are deliberately separate from essays.
             if file.suffix == ".html":
                 text = file.read_text(encoding="utf-8")
+                text = re.sub(r'<!-- discussion:start -->.*?<!-- discussion:end -->',
+                    '<p>Discussions are available on the online mirror and in its separate comment archive.</p>', text, flags=re.S)
                 def local_link(match):
                     attr, value = match.groups()
                     if not value.startswith(PREFIX):

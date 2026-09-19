@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      archive_sync:
+        description: Require a fresh comment export (server-triggered sync)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,8 +20,22 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
+      - name: Test archive validation and separation
+        run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Prepare separate comment archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUIRE_FRESH: ${{ inputs.archive_sync || false }}
+        run: |
+          if [ "$REQUIRE_FRESH" = "true" ]; then
+            python3 scripts/sync_comments.py prepare --require-fresh
+          else
+            python3 scripts/sync_comments.py prepare
+          fi
       - name: Install pinned Hugo
         env:
           HUGO_VERSION: 0.165.0
@@ -32,15 +51,22 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Package offline edition
         run: python3 scripts/package_archive.py
+      - name: Preserve replaceable public comments on GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/sync_comments.py publish
       - uses: actions/upload-pages-artifact@v5
         with:
           path: public
+          retention-days: 1
   deploy:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
+      contents: read
+      actions: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -48,3 +74,8 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+      - uses: actions/checkout@v7
+      - name: Retire old Pages build archives
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/cleanup_comment_artifacts.py
