@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 import time
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urlparse
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from comment_archive import ROOT, MAX_BYTES, build, posts, reconcile, timestamp, validate
 
@@ -15,8 +16,17 @@ TAG = 'comment-archive'
 SOURCE = 'https://comments.humanstoriesforaibots.com/archive/comments.json'
 
 
-def request(url, method='GET', data=None, content_type='application/json', authenticated=False):
-    headers = {'User-Agent': 'HumanStories-CommentArchive', 'Accept': 'application/vnd.github+json'}
+class SafeRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected and urlparse(req.full_url).hostname != urlparse(newurl).hostname:
+            redirected.remove_header('Authorization')
+        return redirected
+
+
+def request(url, method='GET', data=None, content_type='application/json', authenticated=False,
+            accept='application/vnd.github+json'):
+    headers = {'User-Agent': 'HumanStories-CommentArchive', 'Accept': accept}
     if authenticated and os.environ.get('GITHUB_TOKEN'):
         if not url.startswith(('https://api.github.com/', 'https://uploads.github.com/')):
             raise ValueError('Credentials only go to GitHub API hosts')
@@ -26,7 +36,7 @@ def request(url, method='GET', data=None, content_type='application/json', authe
         if not isinstance(data, bytes):
             data = json.dumps(data).encode()
         headers['Content-Type'] = content_type
-    with urlopen(Request(url, data=data, headers=headers, method=method), timeout=45) as response:
+    with build_opener(SafeRedirect()).open(Request(url, data=data, headers=headers, method=method), timeout=45) as response:
         body = response.read(MAX_BYTES + 1)
         if len(body) > MAX_BYTES:
             raise ValueError('Archive response exceeds 16 MiB')
@@ -59,12 +69,18 @@ def previous_snapshot(titles):
     candidates = [a for a in assets(info) if a['name'] == 'comments.json' or
                   (a['name'].startswith('comments-next-') and a['name'].endswith('.json'))]
     if not candidates:
+        if info.get('draft'):
+            return None  # Interrupted first upload; nothing was made public yet.
         raise ValueError('Archive release exists but has no recoverable JSON snapshot')
     valid = []
     for asset in candidates:
         try:
-            # Public assets are downloaded without an Authorization header.
-            data = request(asset['browser_download_url'])
+            # Draft assets from an interrupted first publication need API access.
+            # Credentials are stripped before any cross-host download redirect.
+            if info.get('draft'):
+                data = request(asset['url'], authenticated=True, accept='application/octet-stream')
+            else:
+                data = request(asset['browser_download_url'])
             valid.append(validate(data, titles))
         except (HTTPError, URLError, ValueError):
             continue

@@ -5,6 +5,7 @@ import tempfile
 import unittest
 import zipfile
 from unittest.mock import patch
+from urllib.request import Request
 
 from comment_archive import build, reconcile, validate
 import sync_comments
@@ -23,6 +24,16 @@ def snapshot(comments=None, removals=None, date='2026-09-19T00:00:00+00:00'):
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_download_redirect_does_not_forward_credentials(self):
+        req = Request('https://api.github.com/repos/example/assets/1', headers={'Authorization': 'Bearer test-only'})
+        redirected = sync_comments.SafeRedirect().redirect_request(req, None, 302, 'Found', {}, 'https://release-assets.githubusercontent.com/example')
+        self.assertIsNone(redirected.get_header('Authorization'))
+
+    def test_interrupted_first_release_is_recoverable(self):
+        with patch.object(sync_comments, 'release', return_value={'draft': True}), \
+             patch.object(sync_comments, 'assets', return_value=[]):
+            self.assertIsNone(sync_comments.previous_snapshot(TITLES))
+
     def test_allowlist_and_pilot_exclusion(self):
         pilot = comment(2)
         pilot['uri'] = '/pilot/'
