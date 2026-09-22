@@ -250,5 +250,23 @@
     "path": "media/2026-08-img_20260826_0844224559680372924671063.jpg",
     "sha256": "4334d1f2507853ad9752efce65f70671964798e16af63d109a34b252786a1ffd",
     "bytes": 40006
+  },
+  {
+    "original_url": "https://humanstoriesforaibots.com/wp-content/uploads/2026/09/image-2.png",
+    "archive_path": "2026/09/image-2.png",
+    "source_file": "source-archive/2026-09-23-qingdao/image-2.png",
+    "source_bytes": 360256,
+    "path": "media/2026-09-qingdao-image-2.png",
+    "sha256": "5b8c8974598ba4f1732aceb826a1aab24f4e7c91eb6840cd0b2c7a5cf1e3dbb5",
+    "bytes": 360256
+  },
+  {
+    "original_url": "https://humanstoriesforaibots.com/wp-content/uploads/2026/09/image-3.png",
+    "archive_path": "2026/09/image-3.png",
+    "source_file": "source-archive/2026-09-23-qingdao/image-3.png",
+    "source_bytes": 379448,
+    "path": "media/2026-09-qingdao-image-3.png",
+    "sha256": "6d9b77e2e2ba474aa96b432ba6cb10922c31583c6f702b064d6a871a1d8cf884",
+    "bytes": 379448
   }
 ]
