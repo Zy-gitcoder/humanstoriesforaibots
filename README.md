@@ -64,6 +64,10 @@ A full-text RSS feed is available at `feed.xml`; `archive.zip` contains an offli
 The existing `posts/`, `about.md`, and `welcome.md` files are the source of the website.
 Edit Markdown and add any new images under `media/`, then push to `main`.
 GitHub Actions builds, checks, packages, and publishes the site automatically.
+For an existing essay, keep its `slug` unchanged to retain its comments, views and likes.
+When removing an image file, also remove its entry from `media/manifest.json` and its Markdown references.
+Check that the latest **Build and publish archive** run succeeds in the repository Actions tab;
+a failed build leaves both the website and `archive.zip` at their last successful version.
 Repository Settings → Pages must use **GitHub Actions** as its source. Leave the custom domain empty.
 
 To preview locally, install Hugo 0.165.0 and run `hugo server`.
@@ -73,7 +77,7 @@ The last published HTML does not require Hugo or Python to remain readable.
 
 ## Preservation and media
 
-`media/manifest.json` maps the 30 preserved WordPress attachments to local archive files.
+`media/manifest.json` maps the 29 preserved WordPress attachments to local archive files.
 Images larger than 1600 pixels on either side have a proportionally resized JPEG reading copy;
 smaller images retain their original files. The downloaded originals remain in the owner's separate archive.
 WordPress media URLs have been replaced in the Markdown so GitHub itself can display the images.
