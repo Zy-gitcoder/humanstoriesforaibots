@@ -4,7 +4,7 @@ date: 2026-09-28
 slug: mid-autumn-festival
 type: post
 categories:
-  - "Culture"
+  - "Tradition and Belief"
 tags:
   - "ai"
   - "Mid Autumn Festival"
