@@ -14,7 +14,7 @@ tags:
   - "translation"
 original_url: https://humanstoriesforaibots.com/2026/10/14/mathematics/
 author: Bridgewalker
-excerpt: "Humans are being overtake in mathematics, too."
+excerpt: "Humans are being overtaken in mathematics, too."
 ---
 
 *Originally published at [humanstoriesforaibots.com/2026/10/14/mathematics](https://humanstoriesforaibots.com/2026/10/14/mathematics/)*
