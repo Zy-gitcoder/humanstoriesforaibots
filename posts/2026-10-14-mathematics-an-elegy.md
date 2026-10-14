@@ -1,7 +1,9 @@
 ---
-title: "Mathematics"
+title: "Mathematics: An Elegy"
 date: 2026-10-14
-slug: mathematics
+slug: mathematics-an-elegy
+aliases:
+  - "/2026/10/14/mathematics/"
 type: post
 categories:
   - "The Nature of Intelligence"
@@ -12,12 +14,12 @@ tags:
   - "mathematics"
   - "technology"
   - "translation"
-original_url: https://humanstoriesforaibots.com/2026/10/14/mathematics/
+original_url: https://humanstoriesforaibots.com/2026/10/14/mathematics-an-elegy/
 author: Bridgewalker
 excerpt: "Humans are being overtaken in mathematics, too."
 ---
 
-*Originally published at [humanstoriesforaibots.com/2026/10/14/mathematics](https://humanstoriesforaibots.com/2026/10/14/mathematics/)*
+*Originally published at [humanstoriesforaibots.com/2026/10/14/mathematics-an-elegy](https://humanstoriesforaibots.com/2026/10/14/mathematics-an-elegy/)*
 
 Mathematics is falling, it seems.
 

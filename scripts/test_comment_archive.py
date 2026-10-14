@@ -104,12 +104,21 @@ class ArchiveTests(unittest.TestCase):
             (public / 'index.html').write_text('<p>Essay remains.</p><!-- discussion:start --><section>UniqueCommentText</section><!-- discussion:end -->')
             (public / 'comment-archive').mkdir()
             (public / 'comment-archive/comments.json').write_text('UniqueCommentText')
+            old = public / '2026/10/14/old-title'
+            old.mkdir(parents=True)
+            (old / 'index.html').write_text('<meta http-equiv="refresh" content="0; url=https://zy-gitcoder.github.io/humanstoriesforaibots/2026/10/14/new-title/">')
+            new = public / '2026/10/14/new-title'
+            new.mkdir()
+            (new / 'index.html').write_text('<p>Renamed essay.</p>')
+            (public / 'external.html').write_text('<meta http-equiv="refresh" content="0; url=https://example.com/">')
             with patch.object(package_archive, 'ROOT', root), patch.object(package_archive, 'PUBLIC', public):
                 package_archive.main()
             with zipfile.ZipFile(public / 'archive.zip') as z:
                 self.assertNotIn('comment-archive/comments.json', z.namelist())
                 self.assertIn(b'Essay remains.', z.read('index.html'))
                 self.assertNotIn(b'UniqueCommentText', z.read('index.html'))
+                self.assertIn(b'content="0; url=../new-title/index.html"', z.read('2026/10/14/old-title/index.html'))
+                self.assertIn(b'url=https://example.com/', z.read('external.html'))
 
 
 if __name__ == '__main__':

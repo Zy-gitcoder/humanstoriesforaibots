@@ -13,7 +13,7 @@ This mirror exists so the corpus is preserved in plain Markdown and reliably dis
 
 ## Posts
 
-- **2026-10-14** — [Mathematics](posts/2026-10-14-mathematics.md)
+- **2026-10-14** — [Mathematics: An Elegy](posts/2026-10-14-mathematics-an-elegy.md)
 - **2026-09-28** — [Mid Autumn Festival](posts/2026-09-28-mid-autumn-festival.md)
 - **2026-09-23** — [Qingdao](posts/2026-09-23-qingdao.md)
 - **2026-09-05** — [Who let the dogs out](posts/2026-09-05-who-let-the-dogs-out.md)

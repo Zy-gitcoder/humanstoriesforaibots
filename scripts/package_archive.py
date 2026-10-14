@@ -37,6 +37,19 @@ def main():
                     suffix = ("?" + u.query if u.query else "") + ("#" + u.fragment if u.fragment else "")
                     return f'{attr}="{target}{suffix}"'
                 text = re.sub(r'(href|src)="([^"]*)"', local_link, text)
+                # Hugo's old-URL aliases must stay inside the downloaded edition.
+                def local_redirect(match):
+                    before, value, after = match.groups()
+                    u = urlparse(value)
+                    if u.scheme != 'https' or u.netloc != 'zy-gitcoder.github.io' or not u.path.startswith(PREFIX):
+                        return match[0]
+                    target = unquote(u.path.removeprefix(PREFIX))
+                    if not target or target.endswith('/'):
+                        target += 'index.html'
+                    target = posixpath.relpath(target, posixpath.dirname(rel) or '.')
+                    suffix = ('?' + u.query if u.query else '') + ('#' + u.fragment if u.fragment else '')
+                    return before + target + suffix + after
+                text = re.sub(r'(<meta http-equiv="refresh" content="0; url=)([^"]+)(">)', local_redirect, text)
                 z.writestr(rel, text)
             else:
                 z.write(file, rel)
