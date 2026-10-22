@@ -36,15 +36,26 @@ jobs:
           else
             python3 scripts/sync_comments.py prepare
           fi
-      - name: Install pinned Hugo
+      - name: Build pinned Hugo with patched Go
         env:
-          HUGO_VERSION: 0.165.0
+          HUGO_VERSION: 0.168.0
+          GO_VERSION: 1.27.3
+          GOTOOLCHAIN: local
+          CGO_ENABLED: '0'
+          GOPROXY: https://proxy.golang.org
+          GOSUMDB: sum.golang.org
         run: |
-          curl --fail --location --retry 3 "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz" -o "$RUNNER_TEMP/hugo.tar.gz"
-          printf '5c3a37a5450b3e386e5b75a87a790fea2d04a796d75e171216c80ef48a32b432  %s\n' "$RUNNER_TEMP/hugo.tar.gz" | sha256sum --check
-          mkdir -p "$RUNNER_TEMP/hugo-bin"
-          tar -xzf "$RUNNER_TEMP/hugo.tar.gz" -C "$RUNNER_TEMP/hugo-bin"
-          echo "$RUNNER_TEMP/hugo-bin" >> "$GITHUB_PATH"
+          # The upstream Hugo binary predates Go's October certificate-trust fix.
+          curl --fail --location --retry 3 "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o "$RUNNER_TEMP/go.tar.gz"
+          printf '65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40  %s\n' "$RUNNER_TEMP/go.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/go-toolchain" "$RUNNER_TEMP/hugo-bin"
+          tar -xzf "$RUNNER_TEMP/go.tar.gz" -C "$RUNNER_TEMP/go-toolchain"
+          export GOBIN="$RUNNER_TEMP/hugo-bin"
+          export GOROOT="$RUNNER_TEMP/go-toolchain/go"
+          # Go verifies the pinned source and dependencies against its checksum database.
+          "$GOROOT/bin/go" install "github.com/gohugoio/hugo@v${HUGO_VERSION}"
+          "$GOBIN/hugo" env | grep -Fx "GOVERSION=\"go${GO_VERSION}\""
+          echo "$GOBIN" >> "$GITHUB_PATH"
       - name: Build complete static site
         run: hugo --environment production
       - name: Check pages, media, links and feed
