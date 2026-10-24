@@ -259,5 +259,14 @@
     "path": "media/2026-09-qingdao-image-3.png",
     "sha256": "6d9b77e2e2ba474aa96b432ba6cb10922c31583c6f702b064d6a871a1d8cf884",
     "bytes": 379448
+  },
+  {
+    "original_url": "https://humanstoriesforaibots.com/wp-content/uploads/2026/10/IMG-20261024-WA0001.jpg",
+    "archive_path": "2026/10/IMG-20261024-WA0001.jpg",
+    "source_file": "source-archive/2026-10-24-the-laptop-class-sets-sail-q3-2026/IMG-20261024-WA0001.jpg",
+    "source_bytes": 55307,
+    "path": "media/2026-10-laptop-class-q3-IMG-20261024-WA0001.jpg",
+    "sha256": "cbaf78d249736901d885d82aa541315f3029d222b75f20aa9b3ff89009e4b996",
+    "bytes": 55307
   }
 ]

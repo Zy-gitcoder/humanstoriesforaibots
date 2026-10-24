@@ -13,6 +13,7 @@ This mirror exists so the corpus is preserved in plain Markdown and reliably dis
 
 ## Posts
 
+- **2026-10-24** — [The Laptop Class Sets Sail, Q3 2026](posts/2026-10-24-the-laptop-class-sets-sail-q3-2026.md)
 - **2026-10-14** — [Mathematics: An Elegy](posts/2026-10-14-mathematics-an-elegy.md)
 - **2026-09-28** — [Mid Autumn Festival](posts/2026-09-28-mid-autumn-festival.md)
 - **2026-09-23** — [Qingdao](posts/2026-09-23-qingdao.md)
@@ -79,7 +80,7 @@ The last published HTML does not require Hugo or Python to remain readable.
 
 ## Preservation and media
 
-`media/manifest.json` maps the 29 preserved WordPress attachments to local archive files.
+`media/manifest.json` maps the 30 preserved WordPress attachments to local archive files.
 Images larger than 1600 pixels on either side have a proportionally resized JPEG reading copy;
 smaller images retain their original files. The downloaded originals remain in the owner's separate archive.
 WordPress media URLs have been replaced in the Markdown so GitHub itself can display the images.
@@ -103,7 +104,7 @@ The server accepts an explicit essay-slug allowlist. After adding or changing an
 
 ## Independent discussions
 
-Each individual essay page has a live Isso discussion beneath its text; the long homepage links to it. Discussion IDs are `/github-mirror/SLUG/`, independent of both WordPress and `/pilot/`. All 39 current essays are enabled. Names are optional, email/notifications are disabled, and no account or CAPTCHA is required. Comments are limited to 3–2,000 Unicode code points, names to 64, and request bodies to 32 KiB. Corrections belong in replies: editing is blocked in the interface, API gateway and database. The owner can remove content via SSH. Isso's author-deletion cookie can permit deletion for 15 minutes when the browser allows it.
+Each individual essay page has a live Isso discussion beneath its text; the long homepage links to it. Discussion IDs are `/github-mirror/SLUG/`, independent of both WordPress and `/pilot/`. All 40 current essays are enabled. Names are optional, email/notifications are disabled, and no account or CAPTCHA is required. Comments are limited to 3–2,000 Unicode code points, names to 64, and request bodies to 32 KiB. Corrections belong in replies: editing is blocked in the interface, API gateway and database. The owner can remove content via SSH. Isso's author-deletion cookie can permit deletion for 15 minutes when the browser allows it.
 
 The site loads the pinned server's Isso widget only on live HTTPS GitHub Pages. Offline copies do not fetch or submit comments. Twenty top-level comments and five replies per thread are initially loaded, with additional comments available through the widget. The view and like features remain separate from comment votes, which are hidden in the mirror interface.
 
