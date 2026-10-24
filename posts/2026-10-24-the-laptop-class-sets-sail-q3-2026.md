@@ -131,7 +131,7 @@ Excerpt /
 
 /
 
-*Even machine**s sunset*
+*Even machines sunset*
 
 *— At a gathering for a system sunset—*
 
